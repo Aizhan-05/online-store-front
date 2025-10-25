@@ -1,34 +1,20 @@
 import { Routes, Route } from "react-router";
-import HomePage from "../pages/HomePage";
-import ProductsPage from "../pages/ProductsPage";
-import SingleProductPage from "../pages/SingleProductPage";
-import ReviewsPage from "./ReviewsPage";
-import SearchPage from "../pages/SearchPage";
-import SupportPage from "../pages/SupportPage";
-import ContactPage from "../pages/ContactPage";
-import NotFoundPage from "../pages/NotFoundPage";
-import { useTheme } from "../providers/ThemeProvider";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { routes } from "../utils/routes";
+import { Roles } from "../utils/consts";
 
 export default function AppRouter() {
-  const { isDark } = useTheme();
-
-  useEffect(() => {
-    document.body.style.background = isDark ? "#000" : "#fff";
-  }, [isDark]);
+  const user = useSelector(state => state.user.user);
+  const userRole = user ? user.role : Roles.GUEST;
 
   return (
-    <main className={isDark ? "container dark" : "container"}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/products/:id" element={<SingleProductPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
-        <Route path="/support" element={<SupportPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </main>
+    <Routes>
+      {routes
+        .filter(route => route.roles.includes(userRole))
+        .map(route => {
+          const Component = route.element;
+          return <Route key={route.path} path={route.path} element={<Component />} />;
+        })}
+    </Routes>
   );
 }

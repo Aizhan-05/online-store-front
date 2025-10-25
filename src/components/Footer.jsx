@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="footer-container">
         <div className="footer-part">
           <Link to="/" className="logo-text">
-            <strong>QAZ MARKET</strong>
+            <strong>Online-store</strong>
           </Link>
           <p className="footer-text">Все права защищены</p>
         </div>
